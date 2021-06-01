@@ -50,6 +50,13 @@ Once the services are running, Grafana can be accessed in the browser at `http:/
 
 Configurations can be made in the `vars/all.yml` file and are pretty self explanatory.
 
+## Further features
+
+Features I would like to have:
+
+* **Properly see network drop outs**: When my network stops working, I actually don't see it in the graph. As the speedtest doesn't return a value, the graph interpolates the values before with the ones after the drop. So I would have to modify the NodeJS script so it writes 0-values when speedtest failed.
+* **Build images**: The Ansible script should also build the images. This way I could see code changes in the NodeJS script after deploying via Ansible.
+* **Add round trip to Google**: Another way than speedtest to measure latency is pinging google. And as it is far less heavy than using speedtest, I could add this measurement.
 ## Reading
 
 Only partly related...
