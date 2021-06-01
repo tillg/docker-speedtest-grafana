@@ -1,6 +1,8 @@
 # home.server.docker-compose
 
-A network monitor for my home network. Based on docker-compose and ansible. It uses ideas and code from [frdmn/docker-speedtest-grafana](https://github.com/frdmn/docker-speedtest-grafana).
+A network monitor for my home network. Based on docker-compose and Ansible. It uses ideas and code from [frdmn/docker-speedtest-grafana](https://github.com/frdmn/docker-speedtest-grafana).
+
+![Grafana Speedtest](grafana-speedtest.png)
 
 ## Overview
 
