@@ -1,0 +1,41 @@
+version: "3.3"
+
+services:
+  influxdb:
+    restart: always
+    image: influxdb:1.8
+    container_name: influxdb
+    ports:
+      - "8086:8086"
+    volumes:
+      - "./influxdb/:/var/lib/influxdb"
+    environment:
+      - INFLUXDB_ADMIN_USER=admin
+      - INFLUXDB_ADMIN_PASSWORD=password
+      - INFLUXDB_DB=speedtest
+
+  grafana:
+    restart: always 
+    image: grafana/grafana:6.7.2
+    container_name: grafana
+    volumes:
+      - "{{ server_docker_environment }}/grafana/provisioning:/etc/grafana/provisioning"
+      - "{{ server_docker_environment }}/grafana/data:/var/lib/grafana/ "
+    ports:
+      - "{{ grafana_server_port }}:3000"
+    environment:
+      - "GF_SERVER_ROOT_URL={{ grafana_server_root_url }}"
+      - "GF_SECURITY_ADMIN_PASSWORD={{ grafana_admin_password }}"
+      - "GF_AUTH_ANONYMOUS_ENABLED=true"
+    depends_on:
+      - influxdb
+
+  speedtest:
+    restart: always
+    image: frdmn/speedtest-grafana:latest
+    container_name: speedtest
+    environment:
+      - "SPEEDTEST_INTERVAL={{ speedtest_interval }}"
+      - "SPEEDTEST_HOST={{ speedtest_host }}"
+    depends_on:
+      - influxdb

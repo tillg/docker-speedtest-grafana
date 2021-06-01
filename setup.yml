@@ -1,0 +1,77 @@
+---
+
+# Install the requirements on server
+- hosts: server
+  become: yes
+  vars:
+    pip_install_packages:
+      - name: docker
+      - name: docker-compose
+  vars_files:
+    - vars/all.yml
+  roles:
+    - geerlingguy.pip
+    - geerlingguy.docker
+  tasks:
+    # I need to install those 2 bits to fix stuff:
+    # https://github.com/ansible/ansible/issues/50529
+    - name: install pip3
+      apt: 
+        name: python3-pip 
+        state: present 
+    - name: Install the updated requests python library
+      pip: 
+        name: requests 
+        extra_args: --upgrade
+
+# Install the docker-compose deployments
+- hosts: server
+  tags: deploy
+  become: yes
+  vars_files:
+    - vars/all.yml
+
+  tasks: 
+    - name: Create docker/monitoring directory
+      file:
+        path: /opt/docker/monitoring
+        state: directory
+        owner: root
+        group: root
+        mode: 0777
+
+    - name: Create data directory for grafana
+      file:
+        path: /opt/docker/monitoring/grafana/data/
+        state: directory
+        owner: root
+        group: root
+        mode: 0777
+
+    - name: Copy grafana provisioning directory
+      copy:
+        src: files/grafana/provisioning
+        dest: /opt/docker/monitoring/grafana
+        
+    - name: Copy docker-compose file (template based)
+      template:
+        src: files/docker-compose.yml
+        dest: /opt/docker/monitoring/
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Create and start services
+      community.docker.docker_compose: 
+        state: present
+        restarted: yes
+        project_src: /opt/docker/monitoring/
+        build: yes
+        debug: no
+        project_name: home.server
+        remove_orphans: yes
+      register: output
+
+    - ansible.builtin.debug:
+        var: output
+
