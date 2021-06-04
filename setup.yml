@@ -1,9 +1,22 @@
 ---
+- hosts: server
+  become: yes
+  tasks:
+  - name: Run apt update
+    apt:
+      update_cache: yes
+  - name: Remove useless packages from the cache
+    apt:
+      autoclean: yes
+  - name: Remove dependencies that are no longer required
+    apt:
+      autoremove: yes
 
 # Install the requirements on server
 - hosts: server
   become: yes
   vars:
+    #pip_package: python-pip
     pip_install_packages:
       - name: docker
       - name: docker-compose
@@ -12,17 +25,17 @@
   roles:
     - geerlingguy.pip
     - geerlingguy.docker
-  tasks:
+  #tasks:
     # I need to install those 2 bits to fix stuff:
     # https://github.com/ansible/ansible/issues/50529
-    - name: install pip3
-      apt: 
-        name: python3-pip 
-        state: present 
-    - name: Install the updated requests python library
-      pip: 
-        name: requests 
-        extra_args: --upgrade
+    # - name: install pip3
+    #   apt: 
+    #     name: python3-pip 
+    #     state: present 
+    # - name: Install the updated requests python library
+    #   pip: 
+    #     name: requests 
+    #     extra_args: --upgrade
 
 # Install the docker-compose deployments
 - hosts: server

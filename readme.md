@@ -52,15 +52,27 @@ Configurations can be made in the `vars/all.yml` file and are pretty self explan
 
 ## Further features
 
-Features I would like to have:
+Features I would like to have and ToDos:
 
-* **Properly see network drop outs**: When my network stops working, I actually don't see it in the graph. As the speedtest doesn't return a value, the graph interpolates the values before with the ones after the drop. So I would have to modify the NodeJS script so it writes 0-values when speedtest failed.
+* **Properly see network drop outs**: When my network stops working, I actually don't see it in the graph. As the speedtest doesn't return a value, the graph interpolates the values before with the ones after the drop. So I would have to modify the NodeJS script so it writes 0-values when speedtest failed. ![network down doesn't show](network_down_doesnt_show.png)
 * **Build images**: The Ansible script should also build the images. This way I could see code changes in the NodeJS script after deploying via Ansible.
 * **Add round trip to Google**: Another way than speedtest to measure latency is pinging google. And as it is far less heavy than using speedtest, I could add this measurement.
+* **Monitor the server itself**: In order to have a real monitoring of my home infrastructure, I should add some metrics of my server on which the docker-compose setup is running: Processor, disk space, memory usage...
+
+## Testing 
+
+In order to test my Ansible scripts, I use locally running VM using [multipass](https://multipass.run) from Ubuntu: It worked best for me in order to easily get fresh instances up and running in order to test my Ansible scripts.
+
+See here for my [Multipass Cheatsheet](multipass_cheatsheet.md) and for a [guide for testing the Ansible scripts with multipass](test_with_multipass.md).
+
 ## Reading
 
-Only partly related...
-
+Related and unrelated...
+* A [Promise-based JavaScript FRITZ!Box API.](https://github.com/FlorianWendelborn/fritz-box) - although I am not sure it picks up the data I am most interested in: The actual up- and download volume.
+* [FRITZBOX MONITORING MIT GRAFANA DASHBOARD, May 2021](https://blog.unixweb.de/fritzbox-monitoring-mit-grafana-dashboard/): A good article, but also uses the GO Fritz-Box Exporter. But references a nice Grafana Dashboard for FritzBox-Data.
+* [How to create a sudo user on Ubuntu and allow SSH login](https://thucnc.medium.com/how-to-create-a-sudo-user-on-ubuntu-and-allow-ssh-login-20e28065d9ff)
+* [Using VirtualBox in Multipass on macOS](https://multipass.run/docs/using-virtualbox-in-multipass-macos)
+* [Building, saving, and loading container images with Ansible - redhat, July 2020](https://www.redhat.com/sysadmin/container-images-ansible) explains nicely how to build on a remote host and how to export & import images.
 * [Increase VirtualBox Disk Size](https://linuxhint.com/increase-virtualbox-disk-size/) (after having resized the Virtual Disk with VirtualBox)
 * A good showcase using Ansible and Docker Compose: [Ansible-Tutorial: Setup von Docker, MySQL und WordPress mit Ansible [aktualisiert 2020]](https://www.happycoders.eu/de/devops/ansible-tutorial-setup-docker-mysql-wordpress/)
 * A fully functioning [Speedtest / InfluxDB / Grafana setup](https://github.com/frdmn/docker-speedtest-grafana)
