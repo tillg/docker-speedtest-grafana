@@ -14,6 +14,8 @@ multipass networks
 multipass launch --network en0   # on my Mac that's the Wifi
 # or
 multipass launch --network en7   # on my Mac that's the cable
+# On my Mac I give it more memory & CPUs:
+multipass launch -c 2 -m 2G --network en7
 
 # See wether the new instance is running and what IP address it got
 multipass list

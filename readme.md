@@ -54,8 +54,8 @@ Configurations can be made in the `vars/all.yml` file and are pretty self explan
 
 Features I would like to have and ToDos:
 
-* **Properly see network drop outs**: When my network stops working, I actually don't see it in the graph. As the speedtest doesn't return a value, the graph interpolates the values before with the ones after the drop. So I would have to modify the NodeJS script so it writes 0-values when speedtest failed. ![network down doesn't show](network_down_doesnt_show.png)
 * **Build images**: The Ansible script should also build the images. This way I could see code changes in the NodeJS script after deploying via Ansible.
+* **Properly see network drop outs**: When my network stops working, I actually don't see it in the graph. As the speedtest doesn't return a value, the graph interpolates the values before with the ones after the drop. So I would have to modify the NodeJS script so it writes 0-values when speedtest failed. ![network down doesn't show](network_down_doesnt_show.png)
 * **Add round trip to Google**: Another way than speedtest to measure latency is pinging google. And as it is far less heavy than using speedtest, I could add this measurement.
 * **Monitor the server itself**: In order to have a real monitoring of my home infrastructure, I should add some metrics of my server on which the docker-compose setup is running: Processor, disk space, memory usage...
 
@@ -68,6 +68,7 @@ See here for my [Multipass Cheatsheet](multipass_cheatsheet.md) and for a [guide
 ## Reading
 
 Related and unrelated...
+* An interesting thought: Do I need `docker-compose` or can I use plain Ansible? See [this article](https://www.ansible.com/blog/how-i-switched-from-docker-compose-to-pure-ansible).
 * A [Promise-based JavaScript FRITZ!Box API.](https://github.com/FlorianWendelborn/fritz-box) - although I am not sure it picks up the data I am most interested in: The actual up- and download volume.
 * [FRITZBOX MONITORING MIT GRAFANA DASHBOARD, May 2021](https://blog.unixweb.de/fritzbox-monitoring-mit-grafana-dashboard/): A good article, but also uses the GO Fritz-Box Exporter. But references a nice Grafana Dashboard for FritzBox-Data.
 * [How to create a sudo user on Ubuntu and allow SSH login](https://thucnc.medium.com/how-to-create-a-sudo-user-on-ubuntu-and-allow-ssh-login-20e28065d9ff)

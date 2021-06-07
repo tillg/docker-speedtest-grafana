@@ -79,9 +79,8 @@
         state: present
         restarted: yes
         project_src: /opt/docker/monitoring/
-        build: yes
+        build: no
         debug: no
-        project_name: home.server
         remove_orphans: yes
       register: output
 
