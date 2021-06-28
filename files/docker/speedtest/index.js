@@ -12,24 +12,19 @@ process.env.SPEEDTEST_INTERVAL = (process.env.SPEEDTEST_INTERVAL) ? process.env.
 const bitToMbps = bit => (bit / 1000 / 1000) * 8;
 
 const log = (message, severity = "Info") =>
-  console.log(`[${severity}][${new Date()}] ${message}`);
+  console.log(`[${severity.toUpperCase()}][${new Date()}] ${message}`);
 
 const getSpeedMetrics = async () => {
-  // const args = (process.env.SPEEDTEST_SERVER) ?
-  //   [ "--accept-license", "--accept-gdpr", "-f", "json", "--server-id=" + process.env.SPEEDTEST_SERVER] :
-  //   [ "--accept-license", "--accept-gdpr", "-f", "json" ];
-  
-  const args = ["--json"];
-  
-  console.log ('Speedtest args: ', args);
+  const args = (process.env.SPEEDTEST_SERVER) ?
+    [ "--accept-license", "--accept-gdpr", "-f", "json", "--server-id=" + process.env.SPEEDTEST_SERVER] :
+    [ "--accept-license", "--accept-gdpr", "-f", "json" ];
+
   const { stdout } = await execa("speedtest", args);
-  console.log('Speedtest out: ', stdout);
   const result = JSON.parse(stdout);
-  console.log('Speedtest result interpreted: ', result);
   return {
-    upload: bitToMbps(result.upload),
-    download: bitToMbps(result.download),
-    ping: result.ping
+    upload: bitToMbps(result.upload.bandwidth),
+    download: bitToMbps(result.download.bandwidth),
+    ping: result.ping.latency
   };
 };
 

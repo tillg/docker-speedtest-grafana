@@ -74,12 +74,19 @@
         group: root
         mode: 0644
 
+    # Copy the entire speedtest sources & the Dockerfile
+    # Create the directory first?
+    - name: Copy speedtest sources and Dockerfile
+      copy:
+        src: files/docker/speedtest
+        dest: /opt/docker/monitoring/docker/speedtest
+
     - name: Create and start services
       community.docker.docker_compose: 
         state: present
         restarted: yes
         project_src: /opt/docker/monitoring/
-        build: no
+        build: yes
         debug: no
         remove_orphans: yes
       register: output
