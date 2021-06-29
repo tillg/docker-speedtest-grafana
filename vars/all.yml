@@ -16,6 +16,6 @@ grafana_server_port: 80
 grafana_admin_password: admin
 
 # Speedtest specific
-speedtest_interval: 30
+speedtest_interval: 3
 speedtest_host: local
 

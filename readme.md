@@ -54,8 +54,11 @@ Configurations can be made in the `vars/all.yml` file and are pretty self explan
 
 Features I would like to have and ToDos:
 
-* **Build images**: The Ansible script should also build the images. This way I could see code changes in the NodeJS script after deploying via Ansible.
-* **Properly see network drop outs**: When my network stops working, I actually don't see it in the graph. As the speedtest doesn't return a value, the graph interpolates the values before with the ones after the drop. So I would have to modify the NodeJS script so it writes 0-values when speedtest failed. ![network down doesn't show](network_down_doesnt_show.png)
+* **Build images**: The `docker-compose` file now has a `build` section, and builds the speedtest docker image when launched. This way we can add / modify functionality in the `index.js` node script and see it reflected rigth after start.
+* **Properly see network drop outs**: When my network stops working, I now return 0-values, so I can recognize drop-outs in the graph like so: ![Network drop-out](network-drop-out.png)
+
+## Future features
+
 * **Add round trip to Google**: Another way than speedtest to measure latency is pinging google. And as it is far less heavy than using speedtest, I could add this measurement.
 * **Monitor the server itself**: In order to have a real monitoring of my home infrastructure, I should add some metrics of my server on which the docker-compose setup is running: Processor, disk space, memory usage...
 

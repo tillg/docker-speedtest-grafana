@@ -79,7 +79,7 @@
     - name: Copy speedtest sources and Dockerfile
       copy:
         src: files/docker/speedtest
-        dest: /opt/docker/monitoring/docker/speedtest
+        dest: /opt/docker/monitoring/docker
 
     - name: Create and start services
       community.docker.docker_compose: 
@@ -87,7 +87,8 @@
         restarted: yes
         project_src: /opt/docker/monitoring/
         build: yes
-        debug: no
+        recreate: always
+        debug: yes
         remove_orphans: yes
       register: output
 
