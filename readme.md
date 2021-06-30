@@ -59,6 +59,7 @@ Features I would like to have and ToDos:
 
 ## Future features
 
+* **Use variables for paths**, so it can also be executed on my local Mac w/o polluting it.
 * **Add round trip to Google**: Another way than speedtest to measure latency is pinging google. And as it is far less heavy than using speedtest, I could add this measurement.
 * **Monitor the server itself**: In order to have a real monitoring of my home infrastructure, I should add some metrics of my server on which the docker-compose setup is running: Processor, disk space, memory usage...
 * **Monitor Fritz!Box**, especially the data volume bein up- and downloaded.
