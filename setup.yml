@@ -16,7 +16,6 @@
 - hosts: server
   become: yes
   vars:
-    #pip_package: python-pip
     pip_install_packages:
       - name: docker
       - name: docker-compose
@@ -36,7 +35,7 @@
   tasks: 
     - name: Create docker/monitoring directory
       file:
-        path: /opt/docker/monitoring
+        path: "{{ docker_monitoring_dir }}"
         state: directory
         owner: root
         group: root
@@ -44,7 +43,7 @@
 
     - name: Create data directory for grafana
       file:
-        path: /opt/docker/monitoring/grafana/data/
+        path: "{{ docker_monitoring_dir }}/grafana/data/"
         state: directory
         owner: root
         group: root
@@ -53,12 +52,12 @@
     - name: Copy grafana provisioning directory
       copy:
         src: files/grafana/provisioning
-        dest: /opt/docker/monitoring/grafana
+        dest: "{{ docker_monitoring_dir }}/grafana"
         
     - name: Copy docker-compose file (template based)
       template:
         src: files/docker-compose.yml
-        dest: /opt/docker/monitoring/
+        dest: "{{ docker_monitoring_dir }}/"
         owner: root
         group: root
         mode: 0644
@@ -68,13 +67,13 @@
     - name: Copy speedtest sources and Dockerfile
       copy:
         src: files/docker/speedtest
-        dest: /opt/docker/monitoring/docker
+        dest: "{{ docker_monitoring_dir }}/docker"
 
     - name: Create and start services
       community.docker.docker_compose: 
         state: present
         restarted: yes
-        project_src: /opt/docker/monitoring/
+        project_src: "{{ docker_monitoring_dir }}/"
         build: yes
         recreate: always
         debug: yes

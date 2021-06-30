@@ -50,16 +50,15 @@ Once the services are running, Grafana can be accessed in the browser at `http:/
 
 Configurations can be made in the `vars/all.yml` file and are pretty self explanatory.
 
-## Further features
+## Change log
 
-Features I would like to have and ToDos:
+* **Build images** (26.6.2021): The `docker-compose` file now has a `build` section, and builds the speedtest docker image when launched. This way we can add / modify functionality in the `index.js` node script and see it reflected rigth after start.
+* **Properly see network drop outs** (29.6.2021): When my network stops working, I now return 0-values, so I can recognize drop-outs in the graph like so: ![Network drop-out](network-drop-out.png) 
+* **Use variables for paths** (30.6.2021), so it can also be executed on my local Mac w/o polluting it. 
 
-* **Build images**: The `docker-compose` file now has a `build` section, and builds the speedtest docker image when launched. This way we can add / modify functionality in the `index.js` node script and see it reflected rigth after start.
-* **Properly see network drop outs**: When my network stops working, I now return 0-values, so I can recognize drop-outs in the graph like so: ![Network drop-out](network-drop-out.png)
 
 ## Future features
 
-* **Use variables for paths**, so it can also be executed on my local Mac w/o polluting it.
 * **Add round trip to Google**: Another way than speedtest to measure latency is pinging google. And as it is far less heavy than using speedtest, I could add this measurement.
 * **Monitor the server itself**: In order to have a real monitoring of my home infrastructure, I should add some metrics of my server on which the docker-compose setup is running: Processor, disk space, memory usage...
 * **Monitor Fritz!Box**, especially the data volume bein up- and downloaded.

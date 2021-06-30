@@ -19,8 +19,8 @@ services:
     image: grafana/grafana:6.7.2
     container_name: grafana
     volumes:
-      - "{{ server_docker_environment }}/grafana/provisioning:/etc/grafana/provisioning"
-      - "{{ server_docker_environment }}/grafana/data:/var/lib/grafana/ "
+      - "{{ docker_monitoring_dir }}/grafana/provisioning:/etc/grafana/provisioning"
+      - "{{ docker_monitoring_dir }}/grafana/data:/var/lib/grafana/ "
     ports:
       - "{{ grafana_server_port }}:3000"
     environment:
@@ -31,7 +31,7 @@ services:
       - influxdb
 
   speedtest:
-    build: /opt/docker/monitoring/docker/speedtest/.
+    build: "{{ docker_monitoring_dir }}/docker/speedtest/."
     restart: always
     image: speedtest
     container_name: speedtest
