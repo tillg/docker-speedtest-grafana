@@ -33,7 +33,7 @@ services:
   speedtest:
     build: /opt/docker/monitoring/docker/speedtest/.
     restart: always
-    image: frdmn/speedtest-grafana:latest
+    image: speedtest
     container_name: speedtest
     environment:
       - "SPEEDTEST_INTERVAL={{ speedtest_interval }}"
