@@ -38,5 +38,6 @@ services:
     environment:
       - "SPEEDTEST_INTERVAL={{ speedtest_interval }}"
       - "SPEEDTEST_HOST={{ speedtest_host }}"
+      - "GOOGLE_PING_INTERVAL={{ google_ping_interval }}"
     depends_on:
       - influxdb

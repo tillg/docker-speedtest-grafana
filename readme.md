@@ -70,9 +70,17 @@ In order to test my Ansible scripts, I use locally running VM using [multipass](
 
 See here for my [Multipass Cheatsheet](multipass_cheatsheet.md) and for a [guide for testing the Ansible scripts with multipass](test_with_multipass.md).
 
-## Reading
+## Reading & Problems
 
 Related and unrelated...
+
+* Repeating problems with multipass were solved in [this thread](https://github.com/canonical/multipass/issues/1839), or at least reliably analyzed and worked-around: 
+	Hello, I believe I have the same or at least similar problem. It occurs after I reboot my host (macOS Mojave 10.14.6).
+	If the VMs were stopped before rebooting, I can restart them just fine.
+	But if any VMs were running when the host reboot, they end up "stuck".
+	Workarounds:
+	1- Avoid "stuck" state: Before rebooting, stop the VM. After rebooting, start the VM.
+	2- Recover from "stuck" state: run command to stop the vm, then reboot again, and then start the VM.
 * An interesting thought: Do I need `docker-compose` or can I use plain Ansible? See [this article](https://www.ansible.com/blog/how-i-switched-from-docker-compose-to-pure-ansible).
 * A [Promise-based JavaScript FRITZ!Box API.](https://github.com/FlorianWendelborn/fritz-box) - although I am not sure it picks up the data I am most interested in: The actual up- and download volume.
 * [FRITZBOX MONITORING MIT GRAFANA DASHBOARD, May 2021](https://blog.unixweb.de/fritzbox-monitoring-mit-grafana-dashboard/): A good article, but also uses the GO Fritz-Box Exporter. But references a nice Grafana Dashboard for FritzBox-Data.
