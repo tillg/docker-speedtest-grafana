@@ -30,6 +30,8 @@ const bitToMbps = (bit) => (bit / 1000 / 1000) * 8;
 const log = (message, severity = 'Info') =>
 	console.log(`[${severity.toUpperCase()}][${new Date()}] ${message}`);
 
+const stringify = (json_thingy) => JSON.stringify(json_thingy, null, 2);
+
 const getSpeedMetrics = async () => {
 	const args = process.env.SPEEDTEST_SERVER
 		? [
@@ -44,54 +46,56 @@ const getSpeedMetrics = async () => {
 	try {
 		const { stdout } = await execa('speedtest', args);
 		const result = JSON.parse(stdout);
+		log(
+			`getSpeedMetrics results - Download: ${result.download.bandwidth}, Upload: ${result.download.bandwidth}, Ping: ${result.ping.latency}`
+		);
 		return {
 			upload: bitToMbps(result.upload.bandwidth),
 			download: bitToMbps(result.download.bandwidth),
 			ping: result.ping.latency,
 		};
 	} catch (err) {
-		log('getSpeedMetrics: Error when trying to execute speedtest.', 'ERROR');
-		throw err;
+		log(`getSpeedMetrics: Error: ${stringify(err)}`, 'ERROR');
+		return {
+			upload: 0,
+			download: 0,
+			ping: 0,
+		};
 	}
 };
 
 const getGooglePingMetrics = async () => {
 	const host = 'google.com';
-	const pingResult = await ping.promise.probe(host);
-	return { googlePing: pingResult.time };
+	try {
+		const pingResult = await ping.promise.probe(host);
+		let pingTime = pingResult.time;
+		if (isNaN(pingTime)) pingTime = 0 ;
+		log (`getGooglePingMetrics: Result: ${pingTime}`)
+		return { googlePing: pingTime };
+	} catch (err) {
+		log(`getGooglePingMetrics: Error: ${stringify(err)}`);
+		return { googlePing: 0 }; // If we can't get a google ping we return 0 for proper display
+	}
 };
 
-const pushToInflux = async (influx, metrics) => {
+const pushToInflux = async (influxDB, metrics) => {
 	const points = Object.entries(metrics).map(([measurement, value]) => ({
 		measurement,
 		tags: { host: process.env.SPEEDTEST_HOST },
 		fields: { value },
 	}));
-
-	await influx.writePoints(points);
+	try {
+		await influxDB.writePoints(points);
+	} catch (err) {
+		log(`pushToInflux: Error: ${stringify(err)}`, 'ERROR');
+	}
 };
 
 const cycleSpeedtests = async (influx) => {
 	try {
 		while (true) {
 			log('Starting speedtest...');
-			// If the speedtest fails, we write 0 in the influxdb so the graph shows it didn't work
-			let speedMetrics = {
-				download: 0,
-				upload: 0,
-				ping: 0,
-			};
-			try {
-				speedMetrics = await getSpeedMetrics();
-			} catch (err) {
-				log(
-					'Main loop: Error when executing speedtest. Setting return vars to 0.',
-					'ERROR'
-				);
-			}
-			log(
-				`Speedtest results - Download: ${speedMetrics.download}, Upload: ${speedMetrics.upload}, Ping: ${speedMetrics.ping}`
-			);
+			const speedMetrics = await getSpeedMetrics();
 			await pushToInflux(influx, speedMetrics);
 			log(
 				`cycleSpeedtests: Sleeping for ${process.env.SPEEDTEST_INTERVAL} seconds...`
@@ -99,39 +103,30 @@ const cycleSpeedtests = async (influx) => {
 			await delay(process.env.SPEEDTEST_INTERVAL * 1000);
 		}
 	} catch (err) {
-		console.error(err.message);
+		log(`cycleSpeedtests: Error: ${stringify(err)}`, 'ERROR');
+		log('cycleSpeedtests: Aborting cycle.', 'ERROR');
 		process.exit(1);
 	}
 };
 
 const cycleGooglePing = async (influx) => {
-	while (true) {
-		log('Starting GooglePing...');
-		let googlePingResult = { googlePing: 0 };
-		try {
-			googlePingResult = await getGooglePingMetrics();
-			if (isNaN(googlePingResult.googlePing)) googlePingResult.googlePing = 0;
-		} catch (err) {
+	try {
+		while (true) {
+			const googlePingResult = await getGooglePingMetrics();
+			await pushToInflux(influx, googlePingResult);
 			log(
-				`cycleGooglePing: Error when pinging Google: ${JSON.stringify(
-					err,
-					null,
-					2
-				)}`,
-				'ERROR'
+				`cycleGooglePing: Sleeping for ${process.env.GOOGLE_PING_INTERVAL} seconds...`
 			);
+			await delay(process.env.GOOGLE_PING_INTERVAL * 1000);
 		}
-		log(`GooglePing results - googlePing: ${googlePingResult.googlePing}`);
-		log(`GooglePing results - googlePing: ${JSON.stringify(googlePingResult,null,2)}`);
-		await pushToInflux(influx, googlePingResult);
-		log(
-			`cycleGooglePing: Sleeping for ${process.env.GOOGLE_PING_INTERVAL} seconds...`
-		);
-		await delay(process.env.GOOGLE_PING_INTERVAL * 1000);
+	} catch (err) {
+		log(`cycleGooglePing: Error: ${stringify(err)}`, 'ERROR');
+		log('cycleGooglePing: Aborting cycle.', 'ERROR');
+		process.exit(1);
 	}
 };
 
-const influx = new Influx.InfluxDB({
+const influxDB = new Influx.InfluxDB({
 	host: process.env.INFLUXDB_HOST,
 	database: process.env.INFLUXDB_DB,
 	username: process.env.INFLUXDB_USERNAME,
@@ -139,6 +134,6 @@ const influx = new Influx.InfluxDB({
 });
 
 (async () => {
-	cycleSpeedtests(influx);
-	cycleGooglePing(influx);
+	cycleSpeedtests(influxDB);
+	cycleGooglePing(influxDB);
 })();
