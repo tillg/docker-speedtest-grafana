@@ -2,7 +2,6 @@
   "annotations": {
     "list": [
       {
-        "$$hashKey": "object:51",
         "builtIn": 1,
         "datasource": "-- Grafana --",
         "enable": true,
@@ -13,11 +12,12 @@
       }
     ]
   },
-  "description": "Display speedtest.net results (ping, upload and download speed)",
+  "description": "Display Speedtests (ping, upload and download speed)",
   "editable": true,
   "gnetId": null,
   "graphTooltip": 2,
-  "iteration": 1587492187733,
+  "id": 1,
+  "iteration": 1625481097299,
   "links": [],
   "panels": [
     {
@@ -73,7 +73,6 @@
       "repeatDirection": "h",
       "targets": [
         {
-          "$$hashKey": "object:187",
           "alias": "Download",
           "groupBy": [
             {
@@ -175,7 +174,6 @@
       "pluginVersion": "6.7.2",
       "targets": [
         {
-          "$$hashKey": "object:187",
           "alias": "Upload",
           "groupBy": [
             {
@@ -272,7 +270,6 @@
       "pluginVersion": "6.7.2",
       "targets": [
         {
-          "$$hashKey": "object:187",
           "alias": "Ping",
           "groupBy": [
             {
@@ -367,7 +364,6 @@
       "steppedLine": false,
       "targets": [
         {
-          "$$hashKey": "object:547",
           "alias": "Download",
           "groupBy": [
             {
@@ -413,7 +409,6 @@
           ]
         },
         {
-          "$$hashKey": "object:548",
           "alias": "Upload",
           "groupBy": [
             {
@@ -461,7 +456,6 @@
       ],
       "thresholds": [
         {
-          "$$hashKey": "object:195",
           "colorMode": "critical",
           "fill": false,
           "line": true,
@@ -489,7 +483,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:618",
           "format": "Mbits",
           "label": null,
           "logBase": 1,
@@ -498,7 +491,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:619",
           "format": "Mbits",
           "label": null,
           "logBase": 1,
@@ -555,8 +547,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "$$hashKey": "object:256",
-          "alias": "Ping",
+          "alias": "Ping (Speedtest)",
           "groupBy": [
             {
               "params": [
@@ -577,6 +568,49 @@
           "query": "SELECT mean(\"value\") FROM \"ping\" WHERE $timeFilter GROUP BY time($interval) fill(null)",
           "rawQuery": false,
           "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "host",
+              "operator": "=~",
+              "value": "/^$host$/"
+            }
+          ]
+        },
+        {
+          "alias": "Ping (Google)",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "googlePing",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
           "resultFormat": "time_series",
           "select": [
             [
@@ -621,7 +655,6 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:318",
           "format": "ms",
           "label": null,
           "logBase": 1,
@@ -630,7 +663,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:319",
           "format": "Mbits",
           "label": null,
           "logBase": 1,
@@ -645,6 +677,7 @@
       }
     }
   ],
+  "refresh": "5s",
   "schemaVersion": 22,
   "style": "dark",
   "tags": [],
@@ -653,9 +686,8 @@
       {
         "allValue": null,
         "current": {
-          "tags": [],
-          "text": "tatooine",
-          "value": "tatooine"
+          "text": "local",
+          "value": "local"
         },
         "datasource": "InfluxDB",
         "definition": "show tag values from download with key=\"host\"",
@@ -680,7 +712,7 @@
     ]
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {
@@ -709,10 +741,10 @@
     ]
   },
   "timezone": "",
-  "title": "Speedtest results",
+  "title": "Speedtests",
   "uid": "0A6hxROiz",
   "variables": {
     "list": []
   },
-  "version": 0
+  "version": 1
 }

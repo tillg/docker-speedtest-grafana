@@ -33,6 +33,7 @@ const log = (message, severity = 'Info') =>
 const stringify = (json_thingy) => JSON.stringify(json_thingy, null, 2);
 
 const getSpeedMetrics = async () => {
+	log('getSpeedMetrics: Starting speedtest...');
 	const args = process.env.SPEEDTEST_SERVER
 		? [
 				'--accept-license',
@@ -47,7 +48,7 @@ const getSpeedMetrics = async () => {
 		const { stdout } = await execa('speedtest', args);
 		const result = JSON.parse(stdout);
 		log(
-			`getSpeedMetrics results - Download: ${result.download.bandwidth}, Upload: ${result.download.bandwidth}, Ping: ${result.ping.latency}`
+			`getSpeedMetrics: Results - Download: ${result.download.bandwidth}, Upload: ${result.download.bandwidth}, Ping: ${result.ping.latency}`
 		);
 		return {
 			upload: bitToMbps(result.upload.bandwidth),
@@ -94,7 +95,6 @@ const pushToInflux = async (influxDB, metrics) => {
 const cycleSpeedtests = async (influx) => {
 	try {
 		while (true) {
-			log('Starting speedtest...');
 			const speedMetrics = await getSpeedMetrics();
 			await pushToInflux(influx, speedMetrics);
 			log(

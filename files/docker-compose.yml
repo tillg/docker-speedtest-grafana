@@ -16,7 +16,7 @@ services:
 
   grafana:
     restart: always 
-    image: grafana/grafana:6.7.2
+    image: grafana/grafana:7.3.0
     container_name: grafana
     volumes:
       - "{{ docker_monitoring_dir }}/grafana/provisioning:/etc/grafana/provisioning"
